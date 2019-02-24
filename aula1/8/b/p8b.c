@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <sys/times.h>
+#include <unistd.h>
 
 int main(int argc, char *argv[])
 {
@@ -8,14 +10,15 @@ int main(int argc, char *argv[])
   {
     int x1 = atoi(argv[1]);
     int x2 = atoi(argv[2]);
-    
+
     int a = rand() % x2 + 1;
 
     clock_t start, end;
     double cpu_time_used;
-
-    start = clock();
-    
+    struct tms t;
+    long ticks;
+    start = times(&t);
+    ticks = sysconf(_SC_CLK_TCK);
     srand(time(NULL));
     do
     {
@@ -23,8 +26,13 @@ int main(int argc, char *argv[])
       printf("%i\n", b);
       a = rand() % x2 + 1;
     } while (a != x2);
-    end = clock();
-    cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+    printf("\nClock ticks per second: %ld\n", ticks);
+
+    end = times(&t); 
+
+    printf("Clock:                %4.2f s\n", (double)(end - start) / ticks);
+    printf("User time:            %4.2f s\n", (double)t.tms_utime / ticks);
+    printf("System time:          %4.2f s\n", (double)t.tms_stime / ticks);
   }
   else
   {
