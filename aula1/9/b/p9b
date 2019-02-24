@@ -1,0 +1,30 @@
+#!/bin/bash
+
+echo Name your directory [press . to stop]
+
+cd ../.. 
+
+read who
+
+
+while [ "$who" != . ]
+do
+if [ "$who" = . ]
+then
+exit 1
+elif [ "$who" = "cd" ]
+then
+ls
+echo Where to ?:
+read where
+cd $where
+elif [ "$who" = "ls" ]
+then
+ls
+else
+mkdir $who
+echo Directory sucessfully created
+fi
+echo Name your directory [press . to stop]
+read who
+done
